@@ -29,8 +29,6 @@ export function aggregateByCountry(rows, countryCenters) {
     const mood = r.mood || '';
     map[countryCode].moods[mood] = (map[countryCode].moods[mood] || 0) + 1;
   });
-  
-  console.log('Aggregated countries:', Object.keys(map));
 
   Object.values(map).forEach(c => {
     c.percentages = {};

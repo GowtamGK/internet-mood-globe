@@ -76,7 +76,6 @@ export async function fetchMoodData() {
 
 function parseCSV(csvText) {
   if (!csvText || csvText.trim().length === 0) {
-    console.log('CSV is empty');
     return [];
   }
 
@@ -84,7 +83,6 @@ function parseCSV(csvText) {
   // Google Sheets CSV exports should be UTF-8, but sometimes encoding gets lost
   const lines = csvText.trim().split('\n');
   if (lines.length < 2) {
-    console.log('CSV has no data rows, only headers');
     return [];
   }
 
@@ -143,15 +141,13 @@ function parseCSV(csvText) {
       row[fieldName] = value;
     });
     
-    // Skip rows without required data (but allow empty mood for now to see what's happening)
+    // Skip rows without required data
     if (!row.country_code) {
-      console.log('Skipping row without country_code:', row);
       continue;
     }
     
-    // Skip rows with empty mood (like the first test row)
+    // Skip rows with empty mood
     if (!row.mood || row.mood.trim() === '') {
-      console.log('Skipping row without mood:', row);
       continue;
     }
     
@@ -169,13 +165,8 @@ function parseCSV(csvText) {
       row.country_code = row.country_code.toUpperCase().trim();
     }
     
-    // Log the mood to see if emoji is preserved
-    console.log(`Row ${i}: mood="${row.mood}", country="${row.country_code}"`);
-    
     rows.push(row);
   }
-  
-  console.log(`Parsed ${rows.length} rows from CSV`);
   
   // Filter to last 24 hours and limit to 20k rows
   const now = new Date();
@@ -191,7 +182,6 @@ function parseCSV(csvText) {
     })
     .slice(0, 20000);
   
-  console.log(`After filtering: ${recentRows.length} rows`);
   return recentRows;
 }
 

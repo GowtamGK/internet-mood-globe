@@ -27,10 +27,6 @@ export default function GlobeView({ rawData, countriesGeoJSON, onCountryHover })
       });
     }
     
-    console.log('Raw data rows:', rawData.length);
-    console.log('Country centers found:', Object.keys(countryCentersMap).length);
-    console.log('GeoJSON features:', countriesGeoJSON?.features?.length || 0);
-    
     return aggregateByCountry(rawData, countryCentersMap);
   }, [rawData, countriesGeoJSON]);
 
@@ -39,7 +35,6 @@ export default function GlobeView({ rawData, countriesGeoJSON, onCountryHover })
   // Add a renderKey that changes when hover/click changes to force re-render
   const labelsData = useMemo(() => {
     const renderKey = `${hoveredCountryISO || 'none'}-${clickedCountryISO || 'none'}`;
-    console.log('📊 Creating labels data with renderKey:', renderKey);
     
     const labels = Object.entries(countryStats)
       .filter(([code, stats]) => stats.dominantMood && stats.total > 0)
@@ -54,19 +49,6 @@ export default function GlobeView({ rawData, countriesGeoJSON, onCountryHover })
           renderKey // Add key to force re-render
         };
       });
-    
-    console.log('📊 Labels data updated:', {
-      renderKey,
-      hoveredCountryISO,
-      clickedCountryISO,
-      labels: labels.map(l => ({
-        country: l.country,
-        code: l.country_code,
-        isHovered: l.isHovered,
-        isClicked: l.isClicked,
-        dominantMood: l.dominantMood
-      }))
-    });
     
     return labels;
   }, [countryStats, hoveredCountryISO, clickedCountryISO]);
@@ -149,26 +131,17 @@ export default function GlobeView({ rawData, countriesGeoJSON, onCountryHover })
   const handlePolygonClick = (polygon, event) => {
     if (polygon) {
       const countryCode = polygon.properties?.ISO_A2 || polygon.properties?.ISO_A2_EH || polygon.properties?.ISO_A3;
-      console.log('🟢 CLICK EVENT - Clicked country:', countryCode, {
-        ISO_A2: polygon.properties?.ISO_A2,
-        ISO_A2_EH: polygon.properties?.ISO_A2_EH,
-        ISO_A3: polygon.properties?.ISO_A3,
-        ADMIN: polygon.properties?.ADMIN,
-        currentClicked: clickedCountryISO
-      });
       
       if (countryCode) {
         const codeUpper = countryCode.toUpperCase();
         // Toggle click - if same country clicked again, deselect it
         if (clickedCountryISO === codeUpper) {
-          console.log('🟢 Toggling OFF click for:', codeUpper);
           setClickedCountryISO(null);
           setHoveredCountryISO(null);
           if (onCountryHover) {
             onCountryHover(null);
           }
         } else {
-          console.log('🟢 Toggling ON click for:', codeUpper);
           setClickedCountryISO(codeUpper);
           setHoveredCountryISO(codeUpper);
           if (onCountryHover) {
@@ -187,29 +160,13 @@ export default function GlobeView({ rawData, countriesGeoJSON, onCountryHover })
     }
   }, []);
 
-  // Debug: Log when hover/click state changes
-  useEffect(() => {
-    console.log('🔄 State changed:', {
-      hoveredCountryISO,
-      clickedCountryISO,
-      countryStatsKeys: Object.keys(countryStats)
-    });
-  }, [hoveredCountryISO, clickedCountryISO, countryStats]);
-
   if (!countriesGeoJSON || !countriesGeoJSON.features || countriesGeoJSON.features.length === 0) {
-    console.log('🌍 Waiting for GeoJSON...', {
-      hasGeoJSON: !!countriesGeoJSON,
-      hasFeatures: !!countriesGeoJSON?.features,
-      featureCount: countriesGeoJSON?.features?.length || 0
-    });
     return (
       <div className="w-full h-full flex items-center justify-center">
         <div className="text-white/70">Loading globe data...</div>
       </div>
     );
   }
-  
-  console.log('🌍 GeoJSON loaded with', countriesGeoJSON.features.length, 'features');
 
   return (
     <div className="w-full h-full relative">

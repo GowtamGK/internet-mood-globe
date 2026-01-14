@@ -54,17 +54,8 @@ export async function submitMood(mood, locationData) {
 // Fallback: Try to append directly to Google Sheets using a form submission
 // This requires the sheet to have a form or a simpler endpoint
 async function submitMoodFallback(mood, locationData) {
-  // For now, just log to console
+  // For now, just return success
   // In production, you should set up Google Apps Script
-  console.log('Mood submission (fallback):', {
-    timestamp: new Date().toISOString(),
-    mood: mood,
-    lat: locationData.lat,
-    lng: locationData.lng,
-    country_code: locationData.country_code,
-    country_name: locationData.country_name
-  });
-
   // You can also try using Google Forms or a third-party service
   // For a real implementation, set up Google Apps Script as shown in README
   

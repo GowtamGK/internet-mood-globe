@@ -22,17 +22,13 @@ function App() {
   const [submitting, setSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
 
-  // Fetch countries GeoJSON - Load from reliable CDN with ISO codes
+  // Fetch countries GeoJSON - Load from reliable CDN
   useEffect(() => {
-    console.log('🌍 Loading GeoJSON...');
-    
-    // Use GeoJSON source that has ISO_A2 codes
     const loadGeoJSON = async () => {
-      // This source has ISO_A2 codes
-      const url = 'https://raw.githubusercontent.com/hjnilsson/country-boundaries/master/geojson/countries.geojson';
+      // Use reliable GeoJSON source (fallback works, so use it as primary)
+      const url = 'https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson';
       
       try {
-        console.log(`🌍 Loading from: ${url}`);
         const res = await fetch(url);
         if (!res.ok) {
           throw new Error(`HTTP ${res.status}`);
@@ -40,27 +36,10 @@ function App() {
         const data = await res.json();
         
         if (data && data.features && data.features.length > 0) {
-          console.log(`🌍 ✅ Successfully loaded GeoJSON with ${data.features.length} features`);
-          console.log('🌍 Sample feature properties:', data.features[0]?.properties);
           setCountriesGeoJSON(data);
-        } else {
-          console.error('🌍 ❌ GeoJSON has no features');
         }
       } catch (err) {
-        console.error('🌍 ❌ Error loading GeoJSON:', err);
-        // Try fallback with name-to-code mapping
-        try {
-          const fallbackUrl = 'https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson';
-          console.log(`🌍 Trying fallback: ${fallbackUrl}`);
-          const res = await fetch(fallbackUrl);
-          const data = await res.json();
-          if (data && data.features && data.features.length > 0) {
-            console.log(`🌍 ✅ Loaded from fallback with ${data.features.length} features (will use name mapping)`);
-            setCountriesGeoJSON(data);
-          }
-        } catch (fallbackErr) {
-          console.error('🌍 ❌ Fallback also failed:', fallbackErr);
-        }
+        console.error('Error loading GeoJSON:', err);
       }
     };
     
