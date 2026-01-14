@@ -2,13 +2,13 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 // https://vitejs.dev/config/
-// Base path for GitHub Pages - must match repository name
-const isProduction = process.env.NODE_ENV === 'production'
-const base = isProduction ? '/internet-mood-globe/' : '/'
-
+// IMPORTANT: For GitHub Pages, base MUST match your repository name
+// This is used during build to generate correct asset paths
 export default defineConfig({
   plugins: [react()],
-  base: base,
+  // Base path for GitHub Pages - must be '/internet-mood-globe/' for production
+  // For local dev, Vite will handle this automatically
+  base: '/internet-mood-globe/',
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
