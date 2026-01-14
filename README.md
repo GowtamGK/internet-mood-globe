@@ -1,5 +1,9 @@
 # Internet Mood Globe 🌍
 
+https://gowtamgk.github.io/internet-mood-globe/
+<img width="1708" height="962" alt="image" src="https://github.com/user-attachments/assets/317372f5-4f57-4b3d-8bd9-eb84764c8f03" />
+
+
 A static React + Vite web app that visualizes anonymous global mood data on an interactive 3D globe. Each country aggregates mood submissions into percentages, with dominant mood emojis displayed on the globe.
 
 ## Project Architecture
@@ -357,3 +361,4 @@ timestamp,mood,lat,lng,country_code,country_name
 ## License
 
 MIT
+
