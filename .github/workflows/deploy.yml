@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pagess
+name: Deploy to GitHub Pages
 
 on:
   push:
@@ -28,13 +28,27 @@ jobs:
           node-version: '18'
           cache: 'npm'
 
-      - name: Install dependencies
+      - name: Clean install dependencies
         run: npm ci
 
       - name: Build
         run: npm run build
         env:
           NODE_ENV: production
+          VITE_BASE: /internet-mood-globe/
+
+      - name: Verify build output
+        run: |
+          if [ ! -f "dist/index.html" ]; then
+            echo "Build failed: index.html not found"
+            exit 1
+          fi
+          if grep -q 'src="/src/main.jsx"' dist/index.html; then
+            echo "ERROR: Base path not applied correctly in build!"
+            cat dist/index.html
+            exit 1
+          fi
+          echo "Build verification passed"
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
